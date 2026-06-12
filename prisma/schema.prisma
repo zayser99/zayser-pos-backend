@@ -9,11 +9,81 @@ datasource db {
   provider = "postgresql"
 }
 
-// Ejemplo inicial de modelo para validar la compilación
-model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Settings {
+  id          String   @id @default(uuid())
+  key         String   @unique
+  value       String?
+  description String?
+  metadata    Json?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("settings")
+}
+
+model LandingPageSection {
+  id          String   @id @default(uuid())
+  key         String   @unique
+  description String?
+  content     Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("landing_page_sections")
+}
+
+model BlogPost {
+  id          String   @id @default(uuid())
+  title       String
+  slug        String   @unique
+  coverImage  String?
+  description String?
+  content     Json?
+  category    String?
+  tags        String[]
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("blog_posts")
+}
+
+enum ProductStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model Product {
+  id          String        @id @default(uuid())
+  name        String
+  slug        String        @unique
+  sku         String        @unique
+  barcode     String?
+  coverImage  String?
+  description String?
+  content     Json?
+  category    String?
+  tags        String[]
+  buyPrice    Decimal
+  sellPrice   Decimal
+  stock       Int
+  status      ProductStatus @default(ACTIVE)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@map("products")
+}
+
+model ProductCategory {
+  id          String   @id @default(uuid())
+  name        String
+  slug        String   @unique
+  coverImage  String?
+  description String?
+  content     Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("product_categories")
 }
