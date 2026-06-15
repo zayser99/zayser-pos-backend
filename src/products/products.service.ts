@@ -123,5 +123,21 @@ export class ProductsService {
       label: cat.name,
     }));
   }
+
+  async deleteProduct(id: string) {
+    const product = await this.prisma.product.findUnique({ where: { id } });
+    if (!product) {
+      throw new Error('Product not found');
+    }
+
+    if (product.coverImage) {
+      const publicId = this.cloudinaryService.extractPublicId(product.coverImage);
+      if (publicId) {
+        await this.cloudinaryService.deleteFile(publicId);
+      }
+    }
+
+    return this.prisma.product.delete({ where: { id } });
+  }
 }
 

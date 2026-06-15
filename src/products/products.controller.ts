@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Query, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Post, Get, Delete, Param, Body, Query, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -40,6 +40,12 @@ export class ProductsController {
   @UseGuards(AuthGuard)
   getCategoriesSelect() {
     return this.productsService.getCategoriesSelect();
+  }
+
+  @Delete(':id')
+  @UseGuards(AuthGuard)
+  deleteProduct(@Param('id') id: string) {
+    return this.productsService.deleteProduct(id);
   }
 }
 
