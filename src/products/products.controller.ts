@@ -16,8 +16,7 @@ export class ProductsController {
     @Body() createProductDto: CreateProductDto,
     @UploadedFile() coverImage?: Express.Multer.File,
   ) {
-    // Aquí el coverImage está disponible como archivo binario para el futuro (ej. Cloudinary)
-    return this.productsService.createProduct(createProductDto);
+    return this.productsService.createProduct(createProductDto, coverImage);
   }
 
   @Post('categories')
@@ -27,8 +26,7 @@ export class ProductsController {
     @Body() createCategoryDto: CreateProductCategoryDto,
     @UploadedFile() coverImage?: Express.Multer.File,
   ) {
-    // Aquí el coverImage está disponible
-    return this.productsService.createCategory(createCategoryDto);
+    return this.productsService.createCategory(createCategoryDto, coverImage);
   }
 
   @Get('categories/select')

@@ -2,20 +2,29 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { CreateProductCategoryDto } from './dto/create-product-category.dto';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 @Injectable()
 export class ProductsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly cloudinaryService: CloudinaryService,
+  ) {}
 
-  async createProduct(createProductDto: CreateProductDto) {
+  async createProduct(createProductDto: CreateProductDto, coverImageFile?: Express.Multer.File) {
     // Generar un slug básico
     const slug = createProductDto.name
       .toLowerCase()
       .replace(/ /g, '-')
       .replace(/[^\w-]+/g, '');
 
-    // Generar un sufijo aleatorio para evitar colisiones de slugs si existen repetidos
     const finalSlug = `${slug}-${Math.floor(Math.random() * 1000)}`;
+
+    let coverImageUrl = null;
+    if (coverImageFile) {
+      const uploadResult = await this.cloudinaryService.uploadFile(coverImageFile);
+      coverImageUrl = uploadResult.secure_url;
+    }
 
     return this.prisma.product.create({
       data: {
@@ -28,11 +37,12 @@ export class ProductsService {
         stock: createProductDto.stock,
         status: createProductDto.status,
         description: createProductDto.description,
+        coverImage: coverImageUrl,
       },
     });
   }
 
-  async createCategory(createProductCategoryDto: CreateProductCategoryDto) {
+  async createCategory(createProductCategoryDto: CreateProductCategoryDto, coverImageFile?: Express.Multer.File) {
     const slug = createProductCategoryDto.name
       .toLowerCase()
       .replace(/ /g, '-')
@@ -40,11 +50,18 @@ export class ProductsService {
 
     const finalSlug = `${slug}-${Math.floor(Math.random() * 1000)}`;
 
+    let coverImageUrl = null;
+    if (coverImageFile) {
+      const uploadResult = await this.cloudinaryService.uploadFile(coverImageFile);
+      coverImageUrl = uploadResult.secure_url;
+    }
+
     return this.prisma.productCategory.create({
       data: {
         name: createProductCategoryDto.name,
         slug: finalSlug,
         description: createProductCategoryDto.description,
+        coverImage: coverImageUrl,
       },
     });
   }
