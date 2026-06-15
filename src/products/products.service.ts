@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { CreateProductCategoryDto } from './dto/create-product-category.dto';
+import { GetProductsDto } from './dto/get-products.dto';
+import { Prisma } from '@prisma/client';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 @Injectable()
@@ -10,6 +12,48 @@ export class ProductsService {
     private readonly prisma: PrismaService,
     private readonly cloudinaryService: CloudinaryService,
   ) {}
+
+  async getProducts(query: GetProductsDto) {
+    const { page = 1, limit = 10, search, categoryId, status } = query;
+    const skip = (page - 1) * limit;
+
+    const where: Prisma.ProductWhereInput = {};
+
+    if (search) {
+      where.OR = [
+        { name: { contains: search, mode: 'insensitive' } },
+        { sku: { contains: search, mode: 'insensitive' } },
+      ];
+    }
+
+    if (categoryId) {
+      where.category = categoryId;
+    }
+
+    if (status) {
+      where.status = status;
+    }
+
+    const [data, total] = await Promise.all([
+      this.prisma.product.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+      }),
+      this.prisma.product.count({ where }),
+    ]);
+
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  }
 
   async createProduct(createProductDto: CreateProductDto, coverImageFile?: Express.Multer.File) {
     // Generar un slug básico

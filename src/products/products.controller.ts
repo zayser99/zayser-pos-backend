@@ -1,13 +1,20 @@
-import { Controller, Post, Get, Body, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Post, Get, Body, Query, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { CreateProductCategoryDto } from './dto/create-product-category.dto';
+import { GetProductsDto } from './dto/get-products.dto';
 import { AuthGuard } from '../auth/guards/auth.guard';
 
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
+
+  @Get()
+  @UseGuards(AuthGuard)
+  getProducts(@Query() query: GetProductsDto) {
+    return this.productsService.getProducts(query);
+  }
 
   @Post()
   @UseGuards(AuthGuard)
