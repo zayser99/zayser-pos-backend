@@ -6,6 +6,7 @@ import { PrismaModule } from './prisma/prisma.module';
 
 import { AuthModule } from './auth/auth.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { ProductsModule } from './products/products.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
     PrismaModule,
     AuthModule,
     CloudinaryModule,
+    ProductsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
