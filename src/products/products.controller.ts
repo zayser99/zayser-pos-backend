@@ -1,9 +1,10 @@
-import { Controller, Post, Get, Delete, Param, Body, Query, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Post, Get, Delete, Patch, Param, Body, Query, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { CreateProductCategoryDto } from './dto/create-product-category.dto';
 import { GetProductsDto } from './dto/get-products.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 import { AuthGuard } from '../auth/guards/auth.guard';
 
 @Controller('products')
@@ -46,6 +47,17 @@ export class ProductsController {
   @UseGuards(AuthGuard)
   deleteProduct(@Param('id') id: string) {
     return this.productsService.deleteProduct(id);
+  }
+
+  @Patch(':id')
+  @UseGuards(AuthGuard)
+  @UseInterceptors(FileInterceptor('coverImage'))
+  updateProduct(
+    @Param('id') id: string,
+    @Body() updateProductDto: UpdateProductDto,
+    @UploadedFile() coverImage?: Express.Multer.File,
+  ) {
+    return this.productsService.updateProduct(id, updateProductDto, coverImage);
   }
 }
 

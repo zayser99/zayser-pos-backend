@@ -3,6 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { CreateProductCategoryDto } from './dto/create-product-category.dto';
 import { GetProductsDto } from './dto/get-products.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 import { Prisma } from '@prisma/client';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
@@ -138,6 +139,50 @@ export class ProductsService {
     }
 
     return this.prisma.product.delete({ where: { id } });
+  }
+
+  async updateProduct(id: string, updateProductDto: UpdateProductDto, coverImageFile?: Express.Multer.File) {
+    const product = await this.prisma.product.findUnique({ where: { id } });
+    if (!product) {
+      throw new Error('Product not found');
+    }
+
+    let newCoverImageUrl = product.coverImage;
+    if (coverImageFile) {
+      // Si ya tenia imagen, la borramos
+      if (product.coverImage) {
+        const publicId = this.cloudinaryService.extractPublicId(product.coverImage);
+        if (publicId) {
+          try {
+            await this.cloudinaryService.deleteFile(publicId);
+          } catch (e) {
+            console.error('Failed to delete old image from Cloudinary', e);
+          }
+        }
+      }
+
+      // Subimos la nueva
+      const uploadResult = await this.cloudinaryService.uploadFile(coverImageFile);
+      newCoverImageUrl = uploadResult.secure_url;
+    }
+
+    const dataToUpdate: Prisma.ProductUpdateInput = {};
+    if (updateProductDto.name !== undefined) dataToUpdate.name = updateProductDto.name;
+    if (updateProductDto.sku !== undefined) dataToUpdate.sku = updateProductDto.sku;
+    if (updateProductDto.categoryId !== undefined) dataToUpdate.category = updateProductDto.categoryId;
+    if (updateProductDto.price !== undefined) dataToUpdate.sellPrice = updateProductDto.price;
+    if (updateProductDto.stock !== undefined) dataToUpdate.stock = updateProductDto.stock;
+    if (updateProductDto.status !== undefined) dataToUpdate.status = updateProductDto.status;
+    if (updateProductDto.description !== undefined) dataToUpdate.description = updateProductDto.description;
+    
+    if (coverImageFile) {
+       dataToUpdate.coverImage = newCoverImageUrl;
+    }
+
+    return this.prisma.product.update({
+      where: { id },
+      data: dataToUpdate,
+    });
   }
 }
 
