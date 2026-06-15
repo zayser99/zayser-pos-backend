@@ -1,4 +1,5 @@
-import { Controller, Post, Get, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, Body, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { CreateProductCategoryDto } from './dto/create-product-category.dto';
@@ -10,13 +11,23 @@ export class ProductsController {
 
   @Post()
   @UseGuards(AuthGuard)
-  createProduct(@Body() createProductDto: CreateProductDto) {
+  @UseInterceptors(FileInterceptor('coverImage'))
+  createProduct(
+    @Body() createProductDto: CreateProductDto,
+    @UploadedFile() coverImage?: Express.Multer.File,
+  ) {
+    // Aquí el coverImage está disponible como archivo binario para el futuro (ej. Cloudinary)
     return this.productsService.createProduct(createProductDto);
   }
 
   @Post('categories')
   @UseGuards(AuthGuard)
-  createCategory(@Body() createCategoryDto: CreateProductCategoryDto) {
+  @UseInterceptors(FileInterceptor('coverImage'))
+  createCategory(
+    @Body() createCategoryDto: CreateProductCategoryDto,
+    @UploadedFile() coverImage?: Express.Multer.File,
+  ) {
+    // Aquí el coverImage está disponible
     return this.productsService.createCategory(createCategoryDto);
   }
 

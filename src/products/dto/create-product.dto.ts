@@ -1,5 +1,6 @@
 import { IsString, IsNumber, IsEnum, IsOptional, Min, Length } from 'class-validator';
-import { ProductStatus } from '@prisma/client'; // Assuming Prisma generated the enum, if not, we can define it. Wait, Prisma generated it.
+import { Type } from 'class-transformer';
+import { ProductStatus } from '@prisma/client';
 
 export class CreateProductDto {
   @IsString()
@@ -13,10 +14,12 @@ export class CreateProductDto {
   @IsString()
   categoryId: string;
 
+  @Type(() => Number)
   @IsNumber()
   @Min(0.01)
   price: number;
 
+  @Type(() => Number)
   @IsNumber()
   @Min(0)
   stock: number;
