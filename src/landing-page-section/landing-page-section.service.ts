@@ -36,5 +36,18 @@ export class LandingPageSectionService {
 
     return section;
   }
+
+  async findContentByKey(key: string) {
+    const section = await this.prisma.landingPageSection.findUnique({
+      where: { key },
+      select: { content: true }
+    });
+
+    if (!section) {
+      throw new NotFoundException(`Landing page section with key ${key} not found`);
+    }
+
+    return section.content;
+  }
 }
 

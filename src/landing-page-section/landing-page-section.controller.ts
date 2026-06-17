@@ -14,7 +14,13 @@ export class LandingPageSectionController {
   }
 
   @Get(':key')
+  @UseGuards(AuthGuard) // Protect full admin read
   findByKey(@Param('key') key: string) {
     return this.landingPageSectionService.findByKey(key);
+  }
+
+  @Get('public/content/:key')
+  findContentByKey(@Param('key') key: string) {
+    return this.landingPageSectionService.findContentByKey(key);
   }
 }
