@@ -71,6 +71,7 @@ model Product {
   status      ProductStatus @default(ACTIVE)
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
+  promotions  Promotion[]   @relation("ProductPromotions")
 
   @@map("products")
 }
@@ -86,6 +87,21 @@ model ProductCategory {
   updatedAt   DateTime @updatedAt
 
   @@map("product_categories")
+}
+
+model Promotion {
+  id          String    @id @default(uuid())
+  title       String
+  description String?
+  price       Decimal
+  coverImage  String?
+  isActive    Boolean   @default(true)
+  expiresAt   DateTime?
+  products    Product[] @relation("ProductPromotions")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("promotions")
 }
 
 // --- Better Auth Models ---

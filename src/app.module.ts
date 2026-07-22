@@ -9,6 +9,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { ProductsModule } from './products/products.module';
 import { SettingsModule } from './settings/settings.module';
 import { LandingPageSectionModule } from './landing-page-section/landing-page-section.module';
+import { PromotionsModule } from './promotions/promotions.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { LandingPageSectionModule } from './landing-page-section/landing-page-se
     ProductsModule,
     SettingsModule,
     LandingPageSectionModule,
+    PromotionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
