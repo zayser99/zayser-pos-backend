@@ -17,6 +17,7 @@ export class UploadController {
       const uploadResult = await this.cloudinaryService.uploadFile(file);
       return { url: uploadResult.secure_url };
     } catch (error) {
+      console.error("Upload error:", error);
       throw new BadRequestException('File upload failed');
     }
   }
