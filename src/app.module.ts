@@ -10,6 +10,7 @@ import { ProductsModule } from './products/products.module';
 import { SettingsModule } from './settings/settings.module';
 import { LandingPageSectionModule } from './landing-page-section/landing-page-section.module';
 import { PromotionsModule } from './promotions/promotions.module';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { PromotionsModule } from './promotions/promotions.module';
     SettingsModule,
     LandingPageSectionModule,
     PromotionsModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],
