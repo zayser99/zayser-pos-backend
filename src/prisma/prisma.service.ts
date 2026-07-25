@@ -53,13 +53,13 @@ export class PrismaService
 
     this.pool = pool;
 
-    // Si estamos en desarrollo, logueamos las queries de Prisma de forma limpia
-    if (configService.get<string>('NODE_ENV') === 'development') {
-      // Usamos el hook de eventos para loguear la query
-      (this as any).$on('query', (e: any) => {
-        this.logger.debug(`Query: ${e.query} | Params: ${e.params} | Duration: ${e.duration}ms`);
-      });
-    }
+    // // Si estamos en desarrollo, logueamos las queries de Prisma de forma limpia
+    // if (configService.get<string>('NODE_ENV') === 'development') {
+    //   // Usamos el hook de eventos para loguear la query
+    //   (this as any).$on('query', (e: any) => {
+    //     this.logger.debug(`Query: ${e.query} | Params: ${e.params} | Duration: ${e.duration}ms`);
+    //   });
+    // }
   }
 
   async onModuleInit() {
