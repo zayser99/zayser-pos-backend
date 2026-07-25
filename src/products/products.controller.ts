@@ -17,6 +17,13 @@ export class ProductsController {
     return this.productsService.getProducts(query);
   }
 
+  @Get('public')
+  getPublicProducts(@Query() query: GetProductsDto) {
+    // Force active status for public endpoints
+    query.status = 'ACTIVE';
+    return this.productsService.getProducts(query);
+  }
+
   @Post()
   @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor('coverImage'))

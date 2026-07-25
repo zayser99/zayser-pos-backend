@@ -12,10 +12,10 @@ export class ProductsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly cloudinaryService: CloudinaryService,
-  ) {}
+  ) { }
 
   async getProducts(query: GetProductsDto) {
-    const { page = 1, limit = 10, search, categoryId, status } = query;
+    const { page = 1, limit = 10, search, categoryId, status, ids } = query;
     const skip = (page - 1) * limit;
 
     const where: Prisma.ProductWhereInput = {};
@@ -33,6 +33,10 @@ export class ProductsService {
 
     if (status) {
       where.status = status;
+    }
+
+    if (ids && ids.length > 0) {
+      where.id = { in: ids };
     }
 
     const [data, total] = await Promise.all([
@@ -174,9 +178,9 @@ export class ProductsService {
     if (updateProductDto.stock !== undefined) dataToUpdate.stock = updateProductDto.stock;
     if (updateProductDto.status !== undefined) dataToUpdate.status = updateProductDto.status;
     if (updateProductDto.description !== undefined) dataToUpdate.description = updateProductDto.description;
-    
+
     if (coverImageFile) {
-       dataToUpdate.coverImage = newCoverImageUrl;
+      dataToUpdate.coverImage = newCoverImageUrl;
     }
 
     return this.prisma.product.update({
