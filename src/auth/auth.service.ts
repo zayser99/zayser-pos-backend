@@ -28,11 +28,11 @@ export class AuthService {
             before: async (user) => {
               const count = await this.prisma.user.count();
               if (count === 0) {
-                this.logger.log(`Configurando primer usuario como superadmin: ${user.email}`);
+                this.logger.log(`Configurando primer usuario como admin: ${user.email}`);
                 return {
                   data: {
                     ...user,
-                    role: 'superadmin',
+                    role: 'admin',
                   }
                 };
               }

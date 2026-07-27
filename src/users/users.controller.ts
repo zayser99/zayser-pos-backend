@@ -10,4 +10,13 @@ export class UsersController {
     const count = await this.prisma.user.count();
     return { hasUsers: count > 0 };
   }
+
+  @Get('fix-admin')
+  async fixAdmin() {
+    await this.prisma.user.updateMany({
+      where: { role: 'superadmin' },
+      data: { role: 'admin' },
+    });
+    return { status: 'fixed' };
+  }
 }
