@@ -50,6 +50,11 @@ export class ProductsController {
     return this.productsService.getCategoriesSelect();
   }
 
+  @Get('categories/public')
+  getPublicCategories() {
+    return this.productsService.getCategoriesSelect();
+  }
+
   @Delete(':id')
   @UseGuards(AuthGuard)
   deleteProduct(@Param('id') id: string) {
