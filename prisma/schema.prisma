@@ -116,8 +116,11 @@ model User {
   sessions      Session[]
   accounts      Account[]
 
-  // Custom role field
-  role String?
+  // Custom / Admin plugin fields
+  role       String?
+  banned     Boolean?
+  banReason  String?
+  banExpires DateTime?
 
   @@unique([email])
   @@map("user")

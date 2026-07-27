@@ -11,6 +11,7 @@ import { SettingsModule } from './settings/settings.module';
 import { LandingPageSectionModule } from './landing-page-section/landing-page-section.module';
 import { PromotionsModule } from './promotions/promotions.module';
 import { UploadModule } from './upload/upload.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { UploadModule } from './upload/upload.module';
     LandingPageSectionModule,
     PromotionsModule,
     UploadModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
