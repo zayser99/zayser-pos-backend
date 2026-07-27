@@ -12,6 +12,7 @@ import { LandingPageSectionModule } from './landing-page-section/landing-page-se
 import { PromotionsModule } from './promotions/promotions.module';
 import { UploadModule } from './upload/upload.module';
 import { UsersModule } from './users/users.module';
+import { RolesModule } from './roles/roles.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { UsersModule } from './users/users.module';
     PromotionsModule,
     UploadModule,
     UsersModule,
+    RolesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
