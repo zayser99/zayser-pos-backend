@@ -1,98 +1,86 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🥐 Zayser POS - Backend (API)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Este es el backend oficial (API REST) para el Punto de Venta (POS) y Tienda en Línea de **Trenzas y Conchas Mexicanas**. Está construido sobre el poderoso framework [NestJS](https://nestjs.com/), utilizando [Prisma ORM](https://www.prisma.io/) para la conexión robusta y tipada con la base de datos PostgreSQL.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🚀 Tecnologías Principales
 
-## Description
+- **Framework:** NestJS (Node.js)
+- **Base de Datos:** PostgreSQL
+- **ORM:** Prisma
+- **Autenticación:** Better-Auth
+- **Lenguaje:** TypeScript
+- **Gestor de Paquetes:** pnpm
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 📦 Requisitos Previos
 
-## Project setup
+Antes de comenzar, asegúrate de tener instalado:
+- [Node.js](https://nodejs.org/en/) (v20 o superior recomendado)
+- [pnpm](https://pnpm.io/installation) (Gestor de paquetes)
+- Una instancia de **PostgreSQL** corriendo localmente o en la nube (ej. Supabase, Neon).
 
-```bash
-$ pnpm install
-```
+## 🛠️ Instalación y Configuración Local
 
-## Compile and run the project
+1. **Clonar el repositorio y entrar al directorio:**
+   ```bash
+   cd zayser-pos-api
+   ```
 
-```bash
-# development
-$ pnpm run start
+2. **Instalar dependencias:**
+   ```bash
+   pnpm install
+   ```
 
-# watch mode
-$ pnpm run start:dev
+3. **Configurar Variables de Entorno:**
+   Copia el archivo `.env.example` a `.env`:
+   ```bash
+   cp .env.example .env
+   ```
+   Rellena los valores en el `.env`, especialmente la cadena de conexión a la base de datos:
+   ```env
+   DATABASE_URL="postgresql://usuario:password@localhost:5432/zayser_db?schema=public"
+   ```
 
-# production mode
-$ pnpm run start:prod
-```
+4. **Sincronizar la Base de Datos (Prisma):**
+   Aplica las migraciones y genera el cliente tipado para tu base de datos:
+   ```bash
+   pnpm dlx prisma migrate dev
+   # o si ya tienes la BD creada:
+   pnpm dlx prisma db push
+   pnpm dlx prisma generate
+   ```
 
-## Run tests
+5. **Ejecutar el servidor de desarrollo:**
+   ```bash
+   pnpm run start:dev
+   ```
+   El servidor se levantará (generalmente en `http://localhost:3001`).
 
-```bash
-# unit tests
-$ pnpm run test
+## 🐳 Despliegue con Docker (Producción / VPS)
 
-# e2e tests
-$ pnpm run test:e2e
+El proyecto incluye un `Dockerfile` súper optimizado (Multi-stage build en Alpine Linux), diseñado específicamente para servidores pequeños o VPS austeros (DigitalOcean, AWS Lightsail, etc.).
 
-# test coverage
-$ pnpm run test:cov
-```
+1. **Construir la imagen:**
+   ```bash
+   docker build -t zayser-pos-api .
+   ```
 
-## Deployment
+2. **Ejecutar el contenedor:**
+   ```bash
+   docker run -d -p 3001:3001 --env-file .env --name api-backend zayser-pos-api
+   ```
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+> **Aviso de Rendimiento (VPS):** 
+> El `Dockerfile` ya implementa un límite de memoria estricto (`NODE_OPTIONS="--max-old-space-size=512"`) y usa `pnpm prune --prod` para purgar dependencias innecesarias, previniendo cuelgues por *Out of Memory* (OOM Killer).
+> También incluye la librería `openssl` nativa para asegurar compatibilidad absoluta del motor de Prisma dentro de Alpine Linux.
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## 🗄️ Comandos Útiles de Prisma
 
-```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
-```
+- Abrir la interfaz visual de la base de datos: `pnpm dlx prisma studio`
+- Crear una nueva migración tras cambiar el archivo `schema.prisma`: `pnpm dlx prisma migrate dev --name descripcion_del_cambio`
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## 📁 Estructura del Proyecto
 
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- `prisma/`: Esquema de la base de datos (`schema.prisma`) y migraciones.
+- `src/`: Lógica de negocio (Controladores, Servicios, Módulos).
+  - `src/main.ts`: Punto de entrada de la aplicación.
+- `test/`: Pruebas End-to-End e unitarias.
