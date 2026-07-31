@@ -12,7 +12,7 @@ export class AuthService {
   constructor(private readonly prisma: PrismaService) {
     this.auth = betterAuth({
       baseURL: process.env.BETTER_AUTH_URL || 'http://localhost:3001',
-      trustedOrigins: ['http://localhost:3000', 'http://127.0.0.1:3000'],
+      trustedOrigins: ['http://localhost:3000', 'http://127.0.0.1:3000', 'https://trenzasyconchasmexicanas.store', 'https://zayser-pos.vercel.app'],
       database: prismaAdapter(this.prisma, {
         provider: 'postgresql',
       }),
