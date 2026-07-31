@@ -12,6 +12,7 @@ RUN npm install -g pnpm
 COPY package.json pnpm-lock.yaml* ./
 # Copiar el esquema de prisma para poder generar el cliente
 COPY prisma ./prisma
+COPY prisma.config.ts ./
 
 # Instalar todas las dependencias
 RUN pnpm install --frozen-lockfile
@@ -43,6 +44,7 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/package.json ./
 COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/prisma.config.ts ./
 
 EXPOSE 3001
 
