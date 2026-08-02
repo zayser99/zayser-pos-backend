@@ -16,6 +16,12 @@ export class AuthService {
       database: prismaAdapter(this.prisma, {
         provider: 'postgresql',
       }),
+      advanced: {
+        defaultCookieAttributes: {
+          sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+          secure: process.env.NODE_ENV === 'production',
+        }
+      },
       emailAndPassword: {
         enabled: true,
       },
