@@ -1,6 +1,7 @@
 import { Controller, Post, Get, Delete, Patch, Param, Body, Query, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ProductsService } from './products.service';
+import { SettingsService } from '../settings/settings.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { CreateProductCategoryDto } from './dto/create-product-category.dto';
 import { GetProductsDto } from './dto/get-products.dto';
@@ -9,7 +10,10 @@ import { AuthGuard } from '../auth/guards/auth.guard';
 
 @Controller('products')
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) {}
+  constructor(
+    private readonly productsService: ProductsService,
+    private readonly settingsService: SettingsService
+  ) {}
 
   @Get()
   @UseGuards(AuthGuard)
@@ -18,10 +22,20 @@ export class ProductsController {
   }
 
   @Get('public')
-  getPublicProducts(@Query() query: GetProductsDto) {
+  async getPublicProducts(@Query() query: GetProductsDto) {
     // Force active status for public endpoints
     query.status = 'ACTIVE';
-    return this.productsService.getProducts(query);
+    const result = await this.productsService.getProducts(query);
+    
+    // Strip prices if settings say so
+    const settings = await this.settingsService.findByKey('company_data').catch(() => null);
+    if (settings?.metadata?.showProductPrices === false) {
+      result.data.forEach(p => {
+        p.sellPrice = 0;
+      });
+    }
+    
+    return result;
   }
 
   @Post()
