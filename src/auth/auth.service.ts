@@ -20,6 +20,10 @@ export class AuthService {
         defaultCookieAttributes: {
           sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
           secure: process.env.NODE_ENV === 'production',
+          domain: process.env.NODE_ENV === 'production' ? '.trenzasyconchasmexicanas.store' : undefined,
+        },
+        crossSubDomainCookies: {
+          enabled: process.env.NODE_ENV === 'production',
         }
       },
       emailAndPassword: {
