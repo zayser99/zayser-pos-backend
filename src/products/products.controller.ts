@@ -29,9 +29,9 @@ export class ProductsController {
     
     // Strip prices if settings say so
     const settings = await this.settingsService.findByKey('company_data').catch(() => null);
-    if (settings?.metadata?.showProductPrices === false) {
+    if ((settings?.metadata as any)?.showProductPrices === false) {
       result.data.forEach(p => {
-        p.sellPrice = 0;
+        p.sellPrice = 0 as any;
       });
     }
     
